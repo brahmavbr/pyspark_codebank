@@ -1,0 +1,38 @@
+"""
+Below pyspark snippet will help us to reada data from teradata through JDBC
+"""
+
+try:
+    from pyspark import SparkContext
+    from pyspark import SparkConf
+    from pyspark.sql import SparkSession
+    from pyspark.sql.types import *
+    from pyspark.sql.functions import *
+    from pyspark.sql import functions as F
+    from pyspark.sql.window import Window
+    import logging
+except ImportError as e:
+    print ("Error importing Spark Modules", e)
+    sys.exit(1)
+
+
+def get_td_credentials():
+    td_cred = {'url':"jdbc:teradata://server/LOGMECH=td2,TMODE=TERA,CHARSET=UTF8,TYPE=FASTEXPORT,MAYBENULL=ON",
+               'driver':"com.teradata.jdbc.TeraDriver",
+               'user':"user",
+               'pwd':"passcode"}
+    return td_cred
+    
+td_cred=get_td_credentials()
+
+src_df= spark.read.format("jdbc") \
+        .option("url",td_cred['url']) \
+        .option("driver",td_cred['driver']) \
+        .option("user",td_cred['user']) \
+        .option("password",td_cred['pwd']) \
+        .option("dbtable","{0}".format(query)).load()
+        
+src_df.count()   # return record count      
+        
+    
+    
