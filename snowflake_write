@@ -1,0 +1,57 @@
+"""
+Below pyspark snippet will help us to write data into teradata through JDBC
+"""
+
+try:
+    from pyspark import SparkContext
+    from pyspark import SparkConf
+    from pyspark.sql import SparkSession
+    from pyspark.sql.types import *
+    from pyspark.sql.functions import *
+    from pyspark.sql import functions as F
+    from pyspark.sql.window import Window
+    import logging
+except ImportError as e:
+    print ("Error importing Spark Modules", e)
+    sys.exit(1)
+
+
+def get_sf_credentials():
+
+    sfOptions = {
+        "sfURL": "abc.snowflakecomputing.com",
+        "sfUser": 'user123',
+        "sfPassword": 'pwd123',
+        "sfRole": 'ROLE123',
+        "sfDatabase": 'DB123',
+        "sfSchema": "SCHEMA123",
+        "sfWarehouse": 'WH123'
+    }
+
+    sf_cred= {'sfOptions':sfOptions,
+              'sfSrcNm':"net.snowflake.spark.snowflake"}
+    return sf_cred
+    
+    
+d = [{'key': 1, 'ts': 1,'id':500}, 
+     {'key': 1, 'ts': 2,'id':0},
+     {'key': 1, 'ts': 4, 'id': 6}, 
+     {'key': 1, 'ts': 5},
+     {'key': 1, 'ts': 6},
+     {'key': 1, 'ts': 7, 'id': 20},
+     {'key': 1, 'ts': 8},
+     {'key': 1, 'ts': 9},
+     {'key': 1, 'ts': 10},
+     {'key': 1, 'ts': 11},
+     {'key': 1, 'ts': 12, 'id': 5},
+     {'key': 1, 'ts': 13}]
+
+df = spark.createDataFrame(d) 
+
+#getting snowflake credentials
+sf_cred = get_sf_credentials()
+sfSrcNm = sf_cred['sfSrcNm']
+
+#writing data from dataframe to snowflake as a table.
+df.write.format(sf_cred['sfSrcNm']).options(**sf_cred['sfOptions'])\
+        .option("dbtable", "table123").mode("overwrite").save()
