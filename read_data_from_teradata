@@ -24,7 +24,7 @@ def get_td_credentials():
     return td_cred
     
 td_cred=get_td_credentials()
-
+query=""" ( select * from table1) """
 src_df= spark.read.format("jdbc") \
         .option("url",td_cred['url']) \
         .option("driver",td_cred['driver']) \
