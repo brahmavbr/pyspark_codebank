@@ -22,3 +22,14 @@ def get_month_day_range(date):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    
+"""
+#other option
+snp_dt='2019-01-01'
+d=datetime.strptime(snp_dt,'%Y-%m-%d')
+from datetime import date
+from dateutil.relativedelta import relativedelta
+a=d-relativedelta(months=1)
+b=date(a.year, a.month, 1)
+str(b) 
+"""
